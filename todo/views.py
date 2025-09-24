@@ -1,8 +1,9 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .models import Task
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 # 회원가입
 def signup_view(request):
@@ -43,11 +44,11 @@ def task_list(request):
 @login_required
 def task_create(request):
     if request.method == "POST":
-        title = request.POST['title']
-        description = request.POST['description']
-        Task.objects.create(user=request.user, title=title, description=description)
-        return redirect('task_list')
-    return render(request, 'todo/task_form.html')
+        title = request.POST.get("title")
+        due_date = request.POST.get("due_date") or None
+        Task.objects.create(user=request.user, title=title, due_date=due_date)
+        return redirect("task_list")
+    return render(request, "todo/task_create.html")
 
 @login_required
 def task_update(request, pk):
@@ -65,3 +66,20 @@ def task_delete(request, pk):
     task = get_object_or_404(Task, pk=pk, user=request.user)
     task.delete()
     return redirect('task_list')
+
+@login_required
+def calendar_view(request):
+    tasks = Task.objects.filter(user=request.user).exclude(due_date__isnull=True)
+
+    events = [
+        {
+            "title": task.title,
+            "start": task.due_date.isoformat(),
+            "url": f"/update/{task.id}/"
+        }
+        for task in tasks
+    ]
+
+    events_json = json.dumps(events)
+
+    return render(request, "todo/calendar.html", {"events_json": events_json})
