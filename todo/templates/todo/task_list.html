@@ -4,8 +4,9 @@
     <title>ToDo List</title>
 </head>
 <body>
-    <h1>ToDo List</h1>
-    <a href="{% url 'task_create' %}">+ Add Task</a>
+    <h1>{{ request.user.username }}님의 ToDo List</h1>
+    <a href="{% url 'task_create' %}">+ Add Task</a> |
+    <a href="{% url 'logout' %}">로그아웃</a>
     <ul>
         {% for task in tasks %}
             <li>
