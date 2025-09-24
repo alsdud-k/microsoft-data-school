@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <a href="{% url 'task_create' %}">+ Add Task</a>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <b>{{ task.title }}</b> - {{ task.description }} 
+                {% if task.completed %}(완료됨){% endif %}
+                <a href="{% url 'task_update' task.id %}">수정</a>
+                <a href="{% url 'task_delete' task.id %}">삭제</a>
+            </li>
+        {% empty %}
+            <li>할 일이 없습니다.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
