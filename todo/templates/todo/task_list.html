@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>{{ request.user.username }}님의 ToDo List</h1>
+    <a href="{% url 'task_create' %}">+ Add Task</a> |
+    <a href="{% url 'logout' %}">로그아웃</a>
+
+    <table border="1" style="margin-top:10px;">
+    <tr>
+        <th>제목</th>
+        <th>완료</th>
+        <th>마감일</th>
+        <th>액션</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.completed }}</td>
+        <td>{{ task.due_date|default:"-" }}</td>
+        <td>
+        <a href="{% url 'task_update' task.id %}">수정</a>
+        <a href="{% url 'task_delete' task.id %}">삭제</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+
+    <a href="{% url 'calendar' %}"><button style="margin-top: 20px;">캘린더 보기</button></a>
+</body>
+</html>

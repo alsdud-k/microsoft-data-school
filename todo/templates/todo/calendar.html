@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ request.user.username }}님의 Todo Calendar</title>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
+</head>
+<body>
+    <h1>{{ request.user.username }}님의 캘린더</h1>
+    <a href="{% url 'task_list' %}">목록 보기</a>
+    
+    <div id='calendar' style="max-width: 900px; margin: 40px auto;"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Django에서 전달한 이벤트 JSON 확인
+        var events = JSON.parse('{{ events_json|escapejs }}');
+        console.log(events); // 브라우저 콘솔에서 확인
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: events,
+            height: 'auto', // 화면에 맞게 조정
+            eventClick: function(info) {
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                    info.jsEvent.preventDefault();
+                }
+            }
+        });
+
+        calendar.render();
+    });
+    </script>
+</body>
+</html>

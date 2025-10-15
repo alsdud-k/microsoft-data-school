@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Form</title>
+</head>
+<body>
+    <h1>{% if task %}Edit{% else %}New{% endif %} Task</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Title" value="{{ task.title|default:'' }}"><br>
+        <textarea name="description" placeholder="Description">{{ task.description|default:'' }}</textarea><br>
+        {% if task %}
+            <label>
+                <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}>
+                Completed
+            </label><br>
+        {% endif %}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
